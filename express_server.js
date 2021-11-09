@@ -52,6 +52,12 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/u/:shortURL/delete", (req, res) => {
+  const deletionId = req.params.shortURL;
+  delete urlDatabase[deletionId];
+  res.redirect("/urls");
+});
+
 app.get('*', (req, res) => {
   res.status(300).send("Page Does Not Exist !!!");
 });
