@@ -41,10 +41,19 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortUrl] = longURL;
   res.redirect("/urls/" + shortUrl);
 });
-
+//<a href=<%= longURL %>><%= shortURL %></a></p>
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
+app.get('*', (req, res) => {
+  res.status(300).send("Page Does Not Exist !!!");
 });
 
 app.listen(PORT, () => {
