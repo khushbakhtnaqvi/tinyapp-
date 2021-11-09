@@ -37,9 +37,9 @@ app.get("/urls/new", (req, res) => {
 
 app.post("/urls", (req, res) => {  
   const longURL = req.body.longURL;
-  const shortUrl = generateRandomString()
-  urlDatabase[shortUrl] = longURL;
-  res.redirect("/urls/" + shortUrl);
+  const shortURL = generateRandomString()
+  urlDatabase[shortURL] = longURL;
+  res.redirect("/urls/" + shortURL);
 });
 //<a href=<%= longURL %>><%= shortURL %></a></p>
 app.get("/urls/:shortURL", (req, res) => {
@@ -47,14 +47,20 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/u/:shortURL", (req, res) => {
+app.post("/urls/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
-app.get("/u/:shortURL/delete", (req, res) => {
-  const deletionId = req.params.shortURL;
-  delete urlDatabase[deletionId];
+// app.post("/u/:shortURL/delete", (req, res) => {
+//   const deletionId = req.params.shortURL;
+//   delete urlDatabase[deletionId];
+//   res.redirect("/urls");
+// });
+
+app.post("/urls/:shortURL/delete", (req,res)=>{
+  const idToDelete = req.params.shortURL;
+  delete urlDatabase[idToDelete];
   res.redirect("/urls");
 });
 
