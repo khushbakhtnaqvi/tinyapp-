@@ -26,6 +26,12 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+app.get("/urls/register", (req, res) => {
+  //const username = req.body.username;
+  templateVars = { username: req.body.username, password: req.body.password }
+  res.render("urls_register", templateVars);
+});
+
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
@@ -33,15 +39,12 @@ app.get("/urls", (req, res) => {
 
 app.post("/login", (req, res) => {  
   const username = req.body.username;
-  console.log(username);
   res.cookie("username", username);
   res.redirect("/urls/");
 });
 
 app.post("/logout", (req, res) => {  
-  const username = req.body.username;
-  console.log(username);
-  res.clearCookie('username')
+  res.clearCookie("username")
   res.redirect("/urls/");
 });
 
