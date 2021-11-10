@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-
+const cookieParser = require('cookie-parser')
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-
+app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
@@ -27,12 +27,27 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 
+app.post("/login", (req, res) => {  
+  const username = req.body.username;
+  console.log(username);
+  res.cookie("username", username);
+  res.redirect("/urls/");
+});
+
+app.post("/logout", (req, res) => {  
+  const username = req.body.username;
+  console.log(username);
+  res.clearCookie('username')
+  res.redirect("/urls/");
+});
+
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  templateVars = { username: req.cookies["username"] }
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {  
@@ -41,9 +56,9 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = longURL;
   res.redirect("/urls/" + shortURL);
 });
-//<a href=<%= longURL %>><%= shortURL %></a></p>
+
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
@@ -52,15 +67,21 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// app.post("/u/:shortURL/delete", (req, res) => {
-//   const deletionId = req.params.shortURL;
-//   delete urlDatabase[deletionId];
-//   res.redirect("/urls");
-// });
-
 app.post("/urls/:shortURL/delete", (req,res)=>{
   const idToDelete = req.params.shortURL;
   delete urlDatabase[idToDelete];
+  res.redirect("/urls");
+});
+
+app.get("/urls/:shortURL/update", (req, res) => {
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
+  res.render("urls_show", templateVars);
+});
+
+app.post("/urls/:shortURL/update", (req,res)=>{
+  const newLongURL = req.body.newLongURL;
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = newLongURL;
   res.redirect("/urls");
 });
 
@@ -69,5 +90,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
