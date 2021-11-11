@@ -145,7 +145,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {  
   res.clearCookie("user_id")
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.get("/urls/new", (req, res) => {
@@ -174,8 +174,9 @@ app.post("/urls", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const id = req.cookies["user_id"];
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]["longURL"], user: users[id] };
-  res.render("urls_show", templateVars);
+  const shortURL = req.params.shortURL;
+  //const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL]["longURL"], user: users[id] };
+  res.redirect(urlDatabase[shortURL]["longURL"]);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
