@@ -17,8 +17,25 @@
           <button type="submit" class="btn btn-danger" >Logout</button>
         </form>
       <% } else { %>
+<<<<<<< HEAD
         <a href="/register" class="btn btn-info" role="button">Register</a>
         <a href="/login" class="btn btn-info" role="button">Login</a>
+=======
+<<<<<<< Updated upstream
+        <form class="form-inline" method="POST" action="/login">
+          <div class="form-group">
+            <label for="username"><strong>Username: </strong></label>
+            <input id="username" type="text" class="form-control" name="username" placeholder="username" style="width: 300px; margin: 1em"/>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+=======
+        <ul class="navbar-nav">
+          <li><a class="nav-item nav-link" href="/login">Login</a></li>
+          <li><a class="nav-item nav-link" href="/register">Register</a></li>
+        </ul>
+>>>>>>> Stashed changes
+>>>>>>> feature/user-registration
       <% } %>
       </div>
     </div>
