@@ -45,34 +45,34 @@ app.get("/urls/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
-function isEmailExist(email)
+function getUserByEmail(email)
 {
   for (let key in users) {
     if (users[key]["email"] === email) {
-      return true;
+      return users[key];
     }
   }
   return false;
 }
 
 app.post("/register", (req, res) => {
-  console.log('users before adding new user:');
-  console.log(users);
+  // console.log('users before adding new user:');
+  // console.log(users);
 
   const {email, password} = req.body;
   if (email === '' || password === '') {
     res.status(400).send("Email and password should not be empty!");
   }
   
-  if (isEmailExist(email)) {
+  if (getUserByEmail(email)) {
     res.status(400).send("Email already exists!");
   }
 
   const id = generateRandomString();
   users[id] = {id, email, password};
 
-  console.log('users after adding new user:');
-  console.log(users);
+  // console.log('users after adding new user:');
+  // console.log(users);
   
   res.cookie("user_id", id);
   res.redirect("/urls");
@@ -86,12 +86,34 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.redirect("/urls/");
+  // console.log('users:');
+  // console.log(users);
+
+  const {email, password} = req.body;
+  // if (email === '' || password === '') {
+  //   res.status(400).send("Email and password should not be empty!");
+  // }
+  
+  const user = getUserByEmail(email);
+  if (!user) {
+    // console.log('Test105-emailnotfound');
+    res.status(403).send("Email cannot be found!");
+    return;
+  }
+
+  if (password !== user.password) {
+    // console.log('Test106-passwordnotmatch');
+    res.status(403).send("Password does not match!");
+    return;
+  }
+
+  res.cookie("user_id", user.id);
+  res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {  
   res.clearCookie("user_id")
-  res.redirect("/urls/");
+  res.redirect("/urls");
 });
 
 app.get("/urls/new", (req, res) => {
