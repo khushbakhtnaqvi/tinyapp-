@@ -17,13 +17,8 @@
           <button type="submit" class="btn btn-danger" >Logout</button>
         </form>
       <% } else { %>
-        <form class="form-inline" method="POST" action="/login">
-          <div class="form-group">
-            <label for="username"><strong>Username: </strong></label>
-            <input id="username" type="text" class="form-control" name="username" placeholder="username" style="width: 300px; margin: 1em"/>
-          </div>
-          <button type="submit" class="btn btn-primary">Login</button>
-          </form>
+        <a href="/register" class="btn btn-info" role="button">Register</a>
+        <a href="/login" class="btn btn-info" role="button">Login</a>
       <% } %>
       </div>
     </div>

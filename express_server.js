@@ -39,7 +39,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/urls/register", (req, res) => {
+app.get("/register", (req, res) => {
   const id = req.cookies["user_id"];
   const templateVars = { urls: urlDatabase, user: users[id] };
   res.render("urls_register", templateVars);
@@ -77,12 +77,18 @@ app.post("/register", (req, res) => {
   res.cookie("user_id", id);
   res.redirect("/urls");
   
-})
+});
 
 app.get("/urls", (req, res) => {
   const id = req.cookies["user_id"];
   const templateVars = { urls: urlDatabase, user: users[id] };
   res.render("urls_index", templateVars);
+});
+
+app.get("/login", (req, res) => {
+  const id = req.cookies["user_id"];
+  const templateVars = { urls: urlDatabase, user: users[id] };
+  res.render("urls_login", templateVars);
 });
 
 app.post("/login", (req, res) => {
