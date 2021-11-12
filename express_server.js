@@ -1,4 +1,4 @@
-const {getUserByEmail} = require("./helpers")
+const { getUserByEmail } = require("./helpers")
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -6,7 +6,7 @@ const cookieSession = require('cookie-session');
 const bodyParser = require("body-parser");
 const bcrypt = require('bcryptjs');
 var morgan = require('morgan')
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(cookieSession({
@@ -16,42 +16,38 @@ app.use(cookieSession({
 
 const urlDatabase = {
   "b2xVn2": {
-    longURL:  "http://www.lighthouselabs.ca",
+    longURL: "http://www.lighthouselabs.ca",
     userID: "user1"
   },
- 
+
   "9sm5xK": {
-    longURL:  "http://www.google.ca",
+    longURL: "http://www.google.ca",
     userID: "user1"
   }
 }
 
-const users = { 
+const users = {
   "user1": {
     id: "user1",
-    email: "cindrella@abc.com", 
+    email: "cindrella@abc.com",
     password: "$2a$08$usqL6.NYcS/pBJysWOK/lOxbUawGJ.8u.iiyeQPaOALqQMBqfNFZK" //sweets-are-great
   },
- "user2": {
+  "user2": {
     id: "user2",
-    email: "tangled@domino.com", 
+    email: "tangled@domino.com",
     password: "$2a$08$HSvTJu9ODWikzDFArTdUIOWuGaGhxlCJrWWeNXmbhPDtcCiN1tq9i" //rainy-season
   }
 }
 
 function generateRandomString() {
-  let shortUrl           = '';
-  const chars       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let shortUrl = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charsLen = chars.length;
-  for ( var i = 0; i < 6; i++ ) {
+  for (var i = 0; i < 6; i++) {
     shortUrl += chars.charAt(Math.floor(Math.random() * charsLen));
- }
- return shortUrl;
+  }
+  return shortUrl;
 }
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
 
 app.get("/", (req, res) => {
   const id = req.session.user_id;
@@ -69,12 +65,12 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let {email, password} = req.body;
+  let { email, password } = req.body;
   if (email === '' || password === '') {
     res.status(400).send("Email and password should not be empty! Please <a href='/register'>try again</a>!");
     return;
   }
-  
+
   if (getUserByEmail(email, users)) {
     res.status(400).send("Email already exists! Please <a href='/register'>try again</a>!");
     return;
@@ -82,15 +78,14 @@ app.post("/register", (req, res) => {
 
   const id = generateRandomString();
   password = bcrypt.hashSync(password, 8);
-  users[id] = {id, email, password};
+  users[id] = { id, email, password };
   const user = users[id];
   req.session.user_id = user.id;
   res.redirect("/urls");
-  
+
 });
 
-function urlsForUser(id)
-{
+function urlsForUser(id) {
   const cloneUrlDatabase = Object.assign({}, urlDatabase);
   for (let key in cloneUrlDatabase) {
     if (cloneUrlDatabase[key]["userID"] !== id) {
@@ -119,7 +114,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   const user = getUserByEmail(email, users);
   if (!user) {
     res.status(403).send("Email cannot be found! Please <a href='/login'>try again</a>!");
@@ -150,7 +145,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-app.post("/urls", (req, res) => {  
+app.post("/urls", (req, res) => {
   const id = req.session.user_id;
   if (!id) {
     res.status(403).send("Access forbidden. User not logged in! Please <a href='/login'>login</a>!");
@@ -188,7 +183,7 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.post("/urls/:shortURL/delete", (req,res)=>{
+app.post("/urls/:shortURL/delete", (req, res) => {
   const id = req.session.user_id;
   if (!id) {
     res.status(403).send("User not logged in! Please <a href='/login'>login</a>!");
@@ -206,7 +201,7 @@ app.post("/urls/:shortURL/delete", (req,res)=>{
   res.redirect("/urls");
 });
 
-app.post("/urls/:shortURL", (req,res)=>{
+app.post("/urls/:shortURL", (req, res) => {
   const id = req.session.user_id;
   if (!id) {
     res.status(403).send("User not logged in! Please <a href='/login'>login</a>!");

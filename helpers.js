@@ -1,5 +1,4 @@
-function getUserByEmail(email, users)
-{
+function getUserByEmail(email, users) {
   for (let key in users) {
     if (users[key]["email"] === email) {
       return users[key];
@@ -7,4 +6,4 @@ function getUserByEmail(email, users)
   }
   return undefined;
 }
-module.exports = {getUserByEmail};
+module.exports = { getUserByEmail };
