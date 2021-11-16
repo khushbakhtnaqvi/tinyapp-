@@ -21,8 +21,6 @@ function getUserByEmail(email, users) {
 
 // filters urls for the logged in user
 function urlsForUser(urlDatabase, id) {
-  console.log('Test27-in urlsForUser-urlDatabase: ');
-  console.log(urlDatabase);
   const cloneUrlDatabase = Object.assign({}, urlDatabase);
   for (let key in cloneUrlDatabase) {
     if (cloneUrlDatabase[key]["userID"] !== id) {
